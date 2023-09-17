@@ -1,5 +1,6 @@
 package com.springguru.lombok.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springguru.lombok.model.Customer;
 import com.springguru.lombok.service.CustomerService;
 import com.springguru.lombok.service.CustomerServiceImpl;
@@ -11,8 +12,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.core.Is.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
@@ -22,10 +25,33 @@ class CustomerControllerTest {
     @Autowired
     MockMvc mockMvc;
 
+    @Autowired
+    ObjectMapper objectMapper;
+
     @MockBean
     CustomerService customerService;
 
-    private final CustomerServiceImpl customerServiceImpl = new CustomerServiceImpl();
+    private final CustomerServiceImpl customerServiceImpl;
+
+    CustomerControllerTest() {
+        customerServiceImpl = new CustomerServiceImpl();
+    }
+
+    @Test
+    void testCreateNewCustomer() throws Exception {
+        Customer customer = customerServiceImpl.listCustomers().get(0);
+        customer.setId(null);
+        customer.setVersion(null);
+
+        given(customerService.saveCustomer(any(Customer.class))).willReturn(customerServiceImpl.listCustomers().get(1));
+
+        mockMvc.perform(post("/api/v1/customer")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(customer)))
+                .andExpect(status().isCreated())
+                .andExpect(header().exists("Location"));
+    }
 
     @Test
     void listCustomers() throws Exception {
