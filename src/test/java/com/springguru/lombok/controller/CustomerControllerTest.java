@@ -47,7 +47,6 @@ class CustomerControllerTest {
     @Captor
     ArgumentCaptor<Customer> customerArgumentCaptor;
 
-
     CustomerServiceImpl customerServiceImpl;
 
     @BeforeEach
@@ -124,7 +123,15 @@ class CustomerControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.length()", is(3)));
+    }
 
+    @Test
+    void getBeerByIdNotFound() throws Exception {
+
+        given(customerService.getCustomerById(any(UUID.class))).willThrow(NotFoundException.class);
+
+        mockMvc.perform(get(CUSTOMER_PATH_ID, UUID.randomUUID()))
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -138,6 +145,5 @@ class CustomerControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(customer.getId().toString())))
                 .andExpect(jsonPath("$.name", is(customer.getName())));
-
     }
 }

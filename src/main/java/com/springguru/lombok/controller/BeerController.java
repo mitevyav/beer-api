@@ -57,9 +57,14 @@ public class BeerController {
         return beerService.listBeers();
     }
 
+//    @ExceptionHandler(NotFoundException.class)
+//    public ResponseEntity handleNotFoundException() {
+//        return ResponseEntity.notFound().build();
+//    }
+
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public Beer getBeerById(@PathVariable("id") UUID id) {
         log.debug("Get beer by id in controller was called");
-        return beerService.getBeerById(id);
+        return beerService.getBeerById(id).orElseThrow(NotFoundException::new);
     }
 }
