@@ -2,6 +2,7 @@ package com.springguru.lombok.service;
 
 import com.springguru.lombok.model.Customer;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -79,5 +80,14 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public void deleteById(UUID id) {
         customerMap.remove(id);
+    }
+
+    @Override
+    public void patchById(UUID id, Customer customer) {
+        Customer existing = customerMap.get(id);
+
+        if (StringUtils.hasText(customer.getName())) {
+            existing.setName(customer.getName());
+        }
     }
 }

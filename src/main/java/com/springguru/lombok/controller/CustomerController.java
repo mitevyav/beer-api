@@ -1,6 +1,5 @@
 package com.springguru.lombok.controller;
 
-import com.springguru.lombok.model.Beer;
 import com.springguru.lombok.model.Customer;
 import com.springguru.lombok.service.CustomerService;
 import lombok.AllArgsConstructor;
@@ -20,6 +19,13 @@ public class CustomerController {
 
     @Autowired
     private final CustomerService customerService;
+
+
+    @PatchMapping("{id}")
+    public ResponseEntity patchCustomerById(@PathVariable("id") UUID id, @RequestBody Customer customer) {
+        customerService.patchById(id, customer);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
 
     @DeleteMapping("{id}")
     public ResponseEntity deleteCustomer(@PathVariable("id") UUID id) {
