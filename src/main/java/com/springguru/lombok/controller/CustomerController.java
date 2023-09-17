@@ -20,8 +20,14 @@ public class CustomerController {
     @Autowired
     private final CustomerService customerService;
 
+    @DeleteMapping("{id}")
+    public ResponseEntity deleteCustomer(@PathVariable("id") UUID id) {
+        customerService.deleteById(id);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
     @PutMapping("{id}")
-    public ResponseEntity updateCustomer(@PathVariable UUID id, @RequestBody Customer customer) {
+    public ResponseEntity updateCustomer(@PathVariable("id") UUID id, @RequestBody Customer customer) {
         customerService.updateCustomer(id, customer);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
@@ -39,8 +45,8 @@ public class CustomerController {
         return customerService.listCustomers();
     }
 
-    @RequestMapping(value = "{customerId}", method = RequestMethod.GET)
-    public Customer getCustomerById(@PathVariable("customerId") UUID id) {
+    @RequestMapping(value = "{id}", method = RequestMethod.GET)
+    public Customer getCustomerById(@PathVariable("id") UUID id) {
         return customerService.getCustomerById(id);
     }
 }
