@@ -12,10 +12,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+import static com.springguru.lombok.controller.CustomerController.CUSTOMER_PATH;
+
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/customer")
+@RequestMapping(CUSTOMER_PATH)
 @RestController
 public class CustomerController {
+
+    public static final String CUSTOMER_PATH = "/api/v1/customer";
+    public static final String CUSTOMER_PATH_ID = CUSTOMER_PATH + "/{id}";
 
     @Autowired
     private final CustomerService customerService;
@@ -43,16 +48,16 @@ public class CustomerController {
     public ResponseEntity createCustomer(@RequestBody Customer customer) {
         Customer craeatedCustomer = customerService.saveCustomer(customer);
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Location", "/api/v1/customer/" + craeatedCustomer.getId().toString());
+        headers.add("Location", CUSTOMER_PATH + craeatedCustomer.getId().toString());
         return new ResponseEntity(headers, HttpStatus.CREATED);
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public List<Customer> listCustomers() {
         return customerService.listCustomers();
     }
 
-    @RequestMapping(value = "{id}", method = RequestMethod.GET)
+    @GetMapping(value = "{id}")
     public Customer getCustomerById(@PathVariable("id") UUID id) {
         return customerService.getCustomerById(id);
     }
