@@ -1,5 +1,6 @@
 package com.springguru.lombok.controller;
 
+import com.springguru.lombok.model.Beer;
 import com.springguru.lombok.model.Customer;
 import com.springguru.lombok.service.CustomerService;
 import lombok.AllArgsConstructor;
