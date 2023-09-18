@@ -1,5 +1,6 @@
 package com.springguru.lombok.service;
 
+import com.springguru.lombok.entities.Beer;
 import com.springguru.lombok.mappers.BeerMapper;
 import com.springguru.lombok.model.BeerDTO;
 import com.springguru.lombok.repositories.BeerRepository;
@@ -36,14 +37,21 @@ public class BeerServiceJPA implements BeerService {
     }
 
     @Override
-    public void updateBeer(UUID id, BeerDTO beer) {
-        beerRepository.findById(id).ifPresent(foundBeer -> {
-            foundBeer.setBeerName(beer.getBeerName());
-            foundBeer.setBeerStyle(beer.getBeerStyle());
-            foundBeer.setUpc(beer.getUpc());
-            foundBeer.setPrice(beer.getPrice());
-            beerRepository.save(foundBeer);
-        });
+    public Optional<BeerDTO> updateBeer(UUID id, BeerDTO beer) {
+        Optional<Beer> foundBeerOptional = beerRepository.findById(id);
+
+        if (foundBeerOptional.isEmpty()) {
+            return Optional.empty();
+        }
+
+        Beer foundBeer = foundBeerOptional.get();
+
+        foundBeer.setBeerName(beer.getBeerName());
+        foundBeer.setBeerStyle(beer.getBeerStyle());
+        foundBeer.setUpc(beer.getUpc());
+        foundBeer.setPrice(beer.getPrice());
+
+        return Optional.of(beerMapper.beerToBeerDTO(beerRepository.save(foundBeer)));
     }
 
     @Override
