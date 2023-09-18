@@ -48,7 +48,7 @@ public class CustomerController {
     public ResponseEntity createCustomer(@RequestBody CustomerDTO customer) {
         CustomerDTO craeatedCustomer = customerService.saveCustomer(customer);
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Location", CUSTOMER_PATH + craeatedCustomer.getId().toString());
+        headers.add("Location", CUSTOMER_PATH + "/" + craeatedCustomer.getId().toString());
         return new ResponseEntity(headers, HttpStatus.CREATED);
     }
 
