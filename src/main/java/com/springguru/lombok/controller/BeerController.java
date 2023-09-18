@@ -32,14 +32,20 @@ public class BeerController {
 
     @DeleteMapping("{id}")
     public ResponseEntity deleteById(@PathVariable UUID id) {
-        beerService.deleteById(id);
+        var deleted = beerService.deleteById(id);
+
+        if (!deleted) throw new NotFoundException();
+
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
 
     @PutMapping("{id}")
     public ResponseEntity updateById(@PathVariable("id") UUID id, @RequestBody BeerDTO beer) {
-        beerService.updateBeer(id, beer);
+        var savedBeer = beerService.updateBeer(id, beer);
+
+        if (savedBeer.isEmpty()) throw new NotFoundException();
+
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
