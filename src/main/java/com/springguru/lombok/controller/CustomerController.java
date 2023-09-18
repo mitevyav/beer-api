@@ -1,6 +1,6 @@
 package com.springguru.lombok.controller;
 
-import com.springguru.lombok.model.Customer;
+import com.springguru.lombok.model.CustomerDTO;
 import com.springguru.lombok.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class CustomerController {
 
 
     @PatchMapping("{id}")
-    public ResponseEntity patchCustomerById(@PathVariable("id") UUID id, @RequestBody Customer customer) {
+    public ResponseEntity patchCustomerById(@PathVariable("id") UUID id, @RequestBody CustomerDTO customer) {
         customerService.patchById(id, customer);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
@@ -39,26 +39,26 @@ public class CustomerController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity updateCustomer(@PathVariable("id") UUID id, @RequestBody Customer customer) {
+    public ResponseEntity updateCustomer(@PathVariable("id") UUID id, @RequestBody CustomerDTO customer) {
         customerService.updateCustomer(id, customer);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
     @PostMapping
-    public ResponseEntity createCustomer(@RequestBody Customer customer) {
-        Customer craeatedCustomer = customerService.saveCustomer(customer);
+    public ResponseEntity createCustomer(@RequestBody CustomerDTO customer) {
+        CustomerDTO craeatedCustomer = customerService.saveCustomer(customer);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Location", CUSTOMER_PATH + craeatedCustomer.getId().toString());
         return new ResponseEntity(headers, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public List<Customer> listCustomers() {
+    public List<CustomerDTO> listCustomers() {
         return customerService.listCustomers();
     }
 
     @GetMapping(value = "{id}")
-    public Customer getCustomerById(@PathVariable("id") UUID id) {
+    public CustomerDTO getCustomerById(@PathVariable("id") UUID id) {
         return customerService.getCustomerById(id);
     }
 }

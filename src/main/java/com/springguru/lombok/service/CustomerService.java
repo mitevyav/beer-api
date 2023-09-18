@@ -1,21 +1,21 @@
 package com.springguru.lombok.service;
 
-import com.springguru.lombok.model.Customer;
+import com.springguru.lombok.model.CustomerDTO;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface CustomerService {
 
-    List<Customer> listCustomers();
+    List<CustomerDTO> listCustomers();
 
-    Customer getCustomerById(UUID id);
+    CustomerDTO getCustomerById(UUID id);
 
-    Customer saveCustomer(Customer customer);
+    CustomerDTO saveCustomer(CustomerDTO customer);
 
-    void updateCustomer(UUID id, Customer customer);
+    void updateCustomer(UUID id, CustomerDTO customer);
 
     void deleteById(UUID id);
 
-    void patchById(UUID id, Customer customer);
+    void patchById(UUID id, CustomerDTO customer);
 }

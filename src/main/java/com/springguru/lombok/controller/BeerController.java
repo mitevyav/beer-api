@@ -1,6 +1,6 @@
 package com.springguru.lombok.controller;
 
-import com.springguru.lombok.model.Beer;
+import com.springguru.lombok.model.BeerDTO;
 import com.springguru.lombok.service.BeerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,7 @@ public class BeerController {
     private final BeerService beerService;
 
     @PatchMapping("{id}")
-    public ResponseEntity patchBeerById(@PathVariable("id") UUID id, @RequestBody Beer beer) {
+    public ResponseEntity patchBeerById(@PathVariable("id") UUID id, @RequestBody BeerDTO beer) {
         beerService.patchById(id, beer);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
@@ -38,22 +38,22 @@ public class BeerController {
 
 
     @PutMapping("{id}")
-    public ResponseEntity updateById(@PathVariable("id") UUID id, @RequestBody Beer beer) {
+    public ResponseEntity updateById(@PathVariable("id") UUID id, @RequestBody BeerDTO beer) {
         beerService.updateBeer(id, beer);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
     @PostMapping
 //    @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity handlePost(@RequestBody Beer beer) {
-        Beer savedBeer = beerService.saveNewBeer(beer);
+    public ResponseEntity handlePost(@RequestBody BeerDTO beer) {
+        BeerDTO savedBeer = beerService.saveNewBeer(beer);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Location", BEER_PATH + savedBeer.getId().toString());
         return new ResponseEntity(headers, HttpStatus.CREATED);
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<Beer> listBeers() {
+    public List<BeerDTO> listBeers() {
         return beerService.listBeers();
     }
 
@@ -63,7 +63,7 @@ public class BeerController {
 //    }
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
-    public Beer getBeerById(@PathVariable("id") UUID id) {
+    public BeerDTO getBeerById(@PathVariable("id") UUID id) {
         log.debug("Get beer by id in controller was called");
         return beerService.getBeerById(id).orElseThrow(NotFoundException::new);
     }

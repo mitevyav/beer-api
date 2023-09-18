@@ -1,6 +1,6 @@
 package com.springguru.lombok.service;
 
-import com.springguru.lombok.model.Beer;
+import com.springguru.lombok.model.BeerDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,15 +8,15 @@ import java.util.UUID;
 
 public interface BeerService {
 
-    List<Beer> listBeers();
+    List<BeerDTO> listBeers();
 
-    Optional<Beer> getBeerById(UUID id);
+    Optional<BeerDTO> getBeerById(UUID id);
 
-    Beer saveNewBeer(Beer beer);
+    BeerDTO saveNewBeer(BeerDTO beer);
 
-    void updateBeer(UUID id, Beer beer);
+    void updateBeer(UUID id, BeerDTO beer);
 
     void deleteById(UUID id);
 
-    void patchById(UUID id, Beer beer);
+    void patchById(UUID id, BeerDTO beer);
 }
