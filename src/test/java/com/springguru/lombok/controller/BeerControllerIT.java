@@ -1,9 +1,11 @@
 package com.springguru.lombok.controller;
 
 import com.springguru.lombok.entities.Beer;
+import com.springguru.lombok.mappers.BeerMapper;
 import com.springguru.lombok.model.BeerDTO;
 import com.springguru.lombok.repositories.BeerRepository;
 import jakarta.transaction.Transactional;
+import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,6 +27,28 @@ class BeerControllerIT {
 
     @Autowired
     BeerRepository beerRepository;
+
+    @Autowired
+    BeerMapper beerMapper;
+
+
+    @Test
+    @Transactional
+    @Rollback
+    void updateExistingBeerTest() {
+        Beer beer = beerRepository.findAll().get(0);
+        BeerDTO beerDTO = beerMapper.beerToBeerDTO(beer);
+        beerDTO.setId(null);
+        beerDTO.setVersion(null);
+        val beername = "UPDATED";
+        beerDTO.setBeerName(beername);
+
+        ResponseEntity responseEntity = beerController.updateById(beer.getId(), beerDTO);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(204));
+
+        Beer updatedBeer = beerRepository.findById(beer.getId()).get();
+        assertThat(updatedBeer.getBeerName()).isEqualTo(beername);
+    }
 
     @Test
     @Transactional
