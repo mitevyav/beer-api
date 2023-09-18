@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import static com.springguru.lombok.controller.CustomerController.CUSTOMER_PATH;
@@ -128,7 +129,7 @@ class CustomerControllerTest {
     @Test
     void getBeerByIdNotFound() throws Exception {
 
-        given(customerService.getCustomerById(any(UUID.class))).willThrow(NotFoundException.class);
+        given(customerService.getCustomerById(any(UUID.class))).willReturn(Optional.empty());
 
         mockMvc.perform(get(CUSTOMER_PATH_ID, UUID.randomUUID()))
                 .andExpect(status().isNotFound());
@@ -138,7 +139,7 @@ class CustomerControllerTest {
     void getCustomerById() throws Exception {
         CustomerDTO customer = customerServiceImpl.listCustomers().get(0);
 
-        given(customerService.getCustomerById(customer.getId())).willReturn(customer);
+        given(customerService.getCustomerById(customer.getId())).willReturn(Optional.of(customer));
 
         mockMvc.perform(get(CUSTOMER_PATH_ID, customer.getId()).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
