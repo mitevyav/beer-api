@@ -7,6 +7,7 @@ import com.springguru.lombok.repositories.BeerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -51,7 +52,8 @@ public class BeerServiceJPA implements BeerService {
         foundBeer.setUpc(beer.getUpc());
         foundBeer.setPrice(beer.getPrice());
 
-        return Optional.of(beerMapper.beerToBeerDTO(beerRepository.save(foundBeer)));
+        var saved = beerRepository.save(foundBeer);
+        return Optional.of(beerMapper.beerToBeerDTO(saved));
     }
 
     @Override
@@ -64,7 +66,36 @@ public class BeerServiceJPA implements BeerService {
     }
 
     @Override
-    public void patchById(UUID id, BeerDTO beer) {
+    public Optional<BeerDTO> patchById(UUID id, BeerDTO beer) {
+        Optional<Beer> existingOptional = beerRepository.findById(id);
 
+        if (existingOptional.isEmpty()) {
+            return Optional.empty();
+        }
+
+        Beer existing = existingOptional.get();
+
+        if (StringUtils.hasText(beer.getBeerName())) {
+            existing.setBeerName(beer.getBeerName());
+        }
+
+        if (beer.getBeerStyle() != null) {
+            existing.setBeerStyle(beer.getBeerStyle());
+        }
+
+        if (beer.getPrice() != null) {
+            existing.setPrice(beer.getPrice());
+        }
+
+        if (beer.getQuantityOnHand() != null) {
+            existing.setQuantityOnHand(beer.getQuantityOnHand());
+        }
+
+        if (StringUtils.hasText(beer.getUpc())) {
+            existing.setUpc(beer.getUpc());
+        }
+
+        var saved = beerRepository.save(existing);
+        return Optional.of(beerMapper.beerToBeerDTO(saved));
     }
 }

@@ -31,6 +31,30 @@ class BeerControllerIT {
     @Autowired
     BeerMapper beerMapper;
 
+
+    @Test
+    void testPatchNotFoundId() {
+        assertThrows(
+                NotFoundException.class, () ->
+                        beerController.patchBeerById(UUID.randomUUID(), BeerDTO.builder().build())
+        );
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void patchBeerTest() {
+        Beer beerSample = beerRepository.findAll().get(0);
+        BeerDTO beerToPatch = beerMapper.beerToBeerDTO(beerSample);
+        val updatedName = "UPDATED";
+        beerToPatch.setBeerName(updatedName);
+
+        beerController.patchBeerById(beerToPatch.getId(), beerToPatch);
+
+        Beer patchedBeer = beerRepository.findById(beerToPatch.getId()).get();
+        assertThat(patchedBeer.getBeerName()).isEqualTo(updatedName);
+    }
+
     @Test
     void testDeleteNotFound() {
         assertThrows(NotFoundException.class, () ->

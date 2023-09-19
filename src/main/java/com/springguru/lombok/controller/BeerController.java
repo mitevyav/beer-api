@@ -4,6 +4,7 @@ import com.springguru.lombok.model.BeerDTO;
 import com.springguru.lombok.service.BeerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,10 @@ public class BeerController {
 
     @PatchMapping("{id}")
     public ResponseEntity patchBeerById(@PathVariable("id") UUID id, @RequestBody BeerDTO beer) {
-        beerService.patchById(id, beer);
+        val patchedBeer = beerService.patchById(id, beer);
+
+        if (patchedBeer.isEmpty()) throw new NotFoundException();
+
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
