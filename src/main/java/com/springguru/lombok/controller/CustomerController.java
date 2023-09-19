@@ -3,6 +3,7 @@ package com.springguru.lombok.controller;
 import com.springguru.lombok.model.CustomerDTO;
 import com.springguru.lombok.service.CustomerService;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -28,27 +29,28 @@ public class CustomerController {
 
     @PatchMapping("{id}")
     public ResponseEntity patchCustomerById(@PathVariable("id") UUID id, @RequestBody CustomerDTO customer) {
-        customerService.patchById(id, customer);
+        customerService.patchById(id, customer).orElseThrow(NotFoundException::new);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity deleteCustomer(@PathVariable("id") UUID id) {
-        customerService.deleteById(id);
+        val deleted = customerService.deleteById(id);
+        if (!deleted) throw new NotFoundException();
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("{id}")
     public ResponseEntity updateCustomer(@PathVariable("id") UUID id, @RequestBody CustomerDTO customer) {
-        customerService.updateCustomer(id, customer);
+        customerService.updateCustomer(id, customer).orElseThrow(NotFoundException::new);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
     @PostMapping
     public ResponseEntity createCustomer(@RequestBody CustomerDTO customer) {
-        CustomerDTO craeatedCustomer = customerService.saveCustomer(customer);
+        CustomerDTO createdCustomer = customerService.saveCustomer(customer);
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Location", CUSTOMER_PATH + "/" + craeatedCustomer.getId().toString());
+        headers.add("Location", CUSTOMER_PATH + "/" + createdCustomer.getId().toString());
         return new ResponseEntity(headers, HttpStatus.CREATED);
     }
 
