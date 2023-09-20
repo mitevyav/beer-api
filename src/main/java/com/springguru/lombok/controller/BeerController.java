@@ -8,6 +8,7 @@ import lombok.val;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -45,7 +46,7 @@ public class BeerController {
 
 
     @PutMapping("{id}")
-    public ResponseEntity updateById(@PathVariable("id") UUID id, @RequestBody BeerDTO beer) {
+    public ResponseEntity updateById(@PathVariable("id") UUID id, @Validated @RequestBody BeerDTO beer) {
         var savedBeer = beerService.updateBeer(id, beer);
 
         if (savedBeer.isEmpty()) throw new NotFoundException();
@@ -55,7 +56,7 @@ public class BeerController {
 
     @PostMapping
 //    @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity handlePost(@RequestBody BeerDTO beer) {
+    public ResponseEntity handlePost(@Validated  @RequestBody BeerDTO beer) {
         BeerDTO savedBeer = beerService.saveNewBeer(beer);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Location", BEER_PATH + "/" + savedBeer.getId().toString());
