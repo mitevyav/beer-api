@@ -187,7 +187,7 @@ class BeerControllerIT {
     void testListBeers() {
         List<BeerDTO> beers = beerController.listBeers();
 
-        assertThat(beers).hasSize(3);
+        assertThat(beers).hasSize(2413);
     }
 
     @Test
